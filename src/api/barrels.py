@@ -53,8 +53,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
         gold = row[2]
 
         if num_red_potions >= 10:
-            return [
-            ]
+            return []
 
         # purchase one small red barrel if i can afford it
         for barrel in wholesale_catalog:
@@ -68,7 +67,6 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                 ]
        
         # return none because there are none available in catalog OR i can't afford
-        return [
-        ]
+        return []
 
 
