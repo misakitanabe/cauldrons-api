@@ -82,6 +82,9 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
             connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_potions = {}".format(num_red_potions)))
             connection.execute(sqlalchemy.text("UPDATE global_inventory SET gold = {}".format(gold)))
 
+            # remove cart from carts
+            carts.pop(cart_id) 
+
             return {"total_potions_bought": purchased, "total_gold_paid": 50 * purchased}
     
     return {"total_potions_bought": 0, "total_gold_paid": 0}
