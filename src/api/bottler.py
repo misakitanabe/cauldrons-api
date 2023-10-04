@@ -23,12 +23,17 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
     with db.engine.begin() as connection:
         row = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory")).fetchone()
         num_red_potions = row[0]
+        num_red_ml = row[1]
 
         for potion in potions_delivered:
             if potion.potion_type == [1, 0, 0, 0]:
                 num_red_potions += potion.quantity
+                num_red_ml -= (potion.quantity * 100)
+
+        print("Bottlers delivered: potion increase to ", num_red_potions, "ml decrease to ", num_red_ml)
 
         connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_potions = {}".format(num_red_potions)))
+        connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_ml = {}".format(num_red_ml)))
 
     return "OK"
 
@@ -51,7 +56,7 @@ def get_bottle_plan():
 
         while num_red_ml >= 100:
             num_red_ml -= 100
-            connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_ml = {}".format(num_red_ml)))
+            # connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_ml = {}".format(num_red_ml)))
             count += 1
 
     return [

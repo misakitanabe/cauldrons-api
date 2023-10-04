@@ -73,6 +73,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
         num_red_potions = row[0] 
         gold = row[2]
         purchased = carts[cart_id][0][1]
+        print("carts: customer wants ", purchased, "potions and i have ", num_red_potions, "potions")
 
         # only sell to customer if enough in catalog
         if purchased <= num_red_potions:
@@ -85,6 +86,8 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
             # remove cart from carts
             carts.pop(cart_id) 
 
+            print("purchase success")
             return {"total_potions_bought": purchased, "total_gold_paid": 50 * purchased}
     
+    print("none purchased")
     return {"total_potions_bought": 0, "total_gold_paid": 0}
