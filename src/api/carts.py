@@ -85,7 +85,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
         # update potion count and gold for every item in their cart
         for item in carts[cart_id]:
             if item[0] == "RED_POTION_0":
-                print("carts checkout: customer wants ", item[1], item[0], "potions and i have ", num_red_potions, "potions")
+                print("carts checkout: customer wants", item[1], item[0], "potions and i have", num_red_potions, "potions")
                 
                 # only sell to customer if enough in catalog
                 if item[1] <= num_red_potions:
@@ -94,7 +94,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
                     print("Success selling", item[1], "red potions")
             
             elif item[0] == "GREEN_POTION_0":
-                print("carts checkout: customer wants ", item[1], item[0], "potions and i have ", num_green_potions, "potions")
+                print("carts checkout: customer wants", item[1], item[0], "potions and i have", num_green_potions, "potions")
                 
                 # only sell to customer if enough in catalog
                 if item[1] <= num_green_potions:
@@ -103,7 +103,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
                     print("Success selling", item[1], "green potions")
 
             elif item[0] == "BLUE_POTION_0":
-                print("carts checkout: customer wants ", item[1], item[0], "potions and i have ", num_blue_potions, "potions")
+                print("carts checkout: customer wants", item[1], item[0], "potions and i have", num_blue_potions, "potions")
                 
                 # only sell to customer if enough in catalog
                 if item[1] <= num_blue_potions:
