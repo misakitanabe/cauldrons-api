@@ -111,8 +111,8 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
                     gold += (item[1] * 25) 
                     print("Success selling", item[1], "blue potions")
 
-        # update database 
-        connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_potions = {}, num_green_potions = {}, num_blue_potions = {}, gold = {}".format(num_red_potions, num_green_potions, num_blue_potions, gold)))
+            # update database 
+            connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_potions = {}, num_green_potions = {}, num_blue_potions = {}, gold = {}".format(num_red_potions, num_green_potions, num_blue_potions, gold)))
 
     # remove cart from carts
     carts.pop(cart_id) 
