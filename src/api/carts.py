@@ -107,7 +107,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
                 
                 # only sell to customer if enough in catalog
                 if item[1] <= num_blue_potions:
-                    num_green_potions -= item[1]
+                    num_blue_potions -= item[1]
                     gold += (item[1] * 60) 
                     print("Success selling", item[1], "blue potions")
 
