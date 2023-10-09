@@ -90,7 +90,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
                 # only sell to customer if enough in catalog
                 if item[1] <= num_red_potions:
                     num_red_potions -= item[1]
-                    gold += (item[1] * 50) 
+                    gold += (item[1] * 25) 
                     print("Success selling", item[1], "red potions")
             
             elif item[0] == "GREEN_POTION_0":
@@ -99,7 +99,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
                 # only sell to customer if enough in catalog
                 if item[1] <= num_green_potions:
                     num_green_potions -= item[1]
-                    gold += (item[1] * 50) 
+                    gold += (item[1] * 25) 
                     print("Success selling", item[1], "green potions")
 
             elif item[0] == "BLUE_POTION_0":
@@ -108,7 +108,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
                 # only sell to customer if enough in catalog
                 if item[1] <= num_blue_potions:
                     num_blue_potions -= item[1]
-                    gold += (item[1] * 60) 
+                    gold += (item[1] * 25) 
                     print("Success selling", item[1], "blue potions")
 
         # update database 
