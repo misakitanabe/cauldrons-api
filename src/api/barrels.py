@@ -74,6 +74,8 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
             else:
                 least = "SMALL_BLUE_BARREL"
 
+        print("Barrels Plan: Trying to buy", least)
+
             # buys whichever potion has the least stock
             # if num_red_potions < num_green_potions and num_red_potions < num_blue_potions:
             #     least = "SMALL_RED_BARREL"
@@ -82,24 +84,23 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
             # else:
             #     least = "SMALL_BLUE_BARREL"
 
-        print("Barrels Plan: Trying to buy", least)
         # print("red:", num_red_potions)
         # print("green:", num_green_potions)
         # print("blue:", num_blue_potions)
 
-        # purchase one small barrel if i can afford it
-        for barrel in wholesale_catalog:
-            if barrel.price < gold and barrel.sku == least:
-                print("Successfully added to plan:", barrel.sku)
-                return [
-                    {
-                        "sku": barrel.sku,
-                        "quantity": 1,
-                    }
-                ]
-       
-        print("Failed to add to plan:", barrel.sku, "gold:", gold)
-        # return none because there are none available in catalog OR i can't afford
-        return []
+    # purchase one small barrel if i can afford it
+    for barrel in wholesale_catalog:
+        if barrel.price < gold and barrel.sku == least:
+            print("Successfully added to plan:", barrel.sku)
+            return [
+                {
+                    "sku": barrel.sku,
+                    "quantity": 1,
+                }
+            ]
+    
+    print("Failed to add to plan:", barrel.sku, "gold:", gold)
+    # return none because there are none available in catalog OR i can't afford
+    return []
 
 
