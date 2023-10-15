@@ -52,32 +52,40 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
     return "OK"
 
 # Gets called once a day
-# purchase a new small red potion barrel only if the number of potions in inventory is less than 10. 
 @router.post("/plan")
 def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     """ """
     print(wholesale_catalog)
     
     with db.engine.begin() as connection:
-        row = connection.execute(sqlalchemy.text("SELECT num_red_potions, num_green_potions, num_blue_potions, gold FROM global_inventory")).fetchone()
-        if row is not None:
-            num_red_potions = row[0]
-            num_green_potions = row[1]
-            num_blue_potions = row[2]
-            gold = row[3]
+        gold_row = connection.execute(sqlalchemy.text("SELECT gold FROM global_inventory")).scalar_one()
+        potion_row = connection.execute(sqlalchemy.text("SELECT potion_type FROM potions ORDER BY quantity ASC")).fetchone()
+        # row = connection.execute(sqlalchemy.text("SELECT num_red_potions, num_green_potions, num_blue_potions, gold FROM global_inventory")).fetchone()
 
-        # buys whichever potion has the least stock
-        if num_red_potions < num_green_potions and num_red_potions < num_blue_potions:
-            least = "SMALL_RED_BARREL"
-        elif num_green_potions < num_blue_potions and num_green_potions < num_red_potions:
-            least = "SMALL_GREEN_BARREL"
-        else:
-            least = "SMALL_BLUE_BARREL"
+        if gold_row is not None:
+            gold = gold_row[0]
+
+        if potion_row is not None:
+            least_type = potion_row[0]
+            if least_type == [100, 0, 0, 0]:
+                least = "SMALL_RED_BARREL"
+            elif least_type == [0, 100, 0, 0]:
+                least = "SMALL_GREEN_BARREL"
+            else:
+                least = "SMALL_BLUE_BARREL"
+
+            # buys whichever potion has the least stock
+            # if num_red_potions < num_green_potions and num_red_potions < num_blue_potions:
+            #     least = "SMALL_RED_BARREL"
+            # elif num_green_potions < num_blue_potions and num_green_potions < num_red_potions:
+            #     least = "SMALL_GREEN_BARREL"
+            # else:
+            #     least = "SMALL_BLUE_BARREL"
 
         print("Barrels Plan: Trying to buy", least)
-        print("red:", num_red_potions)
-        print("green:", num_green_potions)
-        print("blue:", num_blue_potions)
+        # print("red:", num_red_potions)
+        # print("green:", num_green_potions)
+        # print("blue:", num_blue_potions)
 
         # purchase one small barrel if i can afford it
         for barrel in wholesale_catalog:
