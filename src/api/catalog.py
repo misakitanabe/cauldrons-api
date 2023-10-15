@@ -15,37 +15,49 @@ def get_catalog():
     # Can return a max of 20 items.
     # CALL DATABASE
     with db.engine.begin() as connection:
-        row = connection.execute(sqlalchemy.text("SELECT num_red_potions, num_green_potions, num_blue_potions FROM global_inventory")).fetchone()
+        # row = connection.execute(sqlalchemy.text("SELECT num_red_potions, num_green_potions, num_blue_potions FROM global_inventory")).fetchone()
+        rows = connection.execute(sqlalchemy.text("SELECT sku, name, quantity, price, potion_type FROM potions WHERE quantity > 0")).fetchall()
 
-    if row is not None:
-        num_red_potions = row[0]
-        num_green_potions = row[1]
-        num_blue_potions = row[2]
-    
-    if num_red_potions > 0:
-        catalog.append({
-                            "sku": "RED_POTION_0",
-                            "name": "red potion",
-                            "quantity": num_red_potions,
-                            "price": 25,
-                            "potion_type": [100, 0, 0, 0],
-                        })
-    if num_green_potions > 0:
-        catalog.append({
-                            "sku": "GREEN_POTION_0",
-                            "name": "green potion",
-                            "quantity": num_green_potions,
-                            "price": 25,
-                            "potion_type": [0, 100, 0, 0],
-                        })
-        
-    if num_blue_potions > 0:
-        catalog.append({
-                            "sku": "BLUE_POTION_0",
-                            "name": "blue potion",
-                            "quantity": num_blue_potions,
-                            "price": 25,
-                            "potion_type": [0, 0, 100, 0],
-                        })
+        for row in rows:
+            catalog.append({
+                "sku": row[0],
+                "name": row[1],
+                "quantity": row[2],
+                "price": row[3],
+                "potion_type": row[4],
+            })
+            
     return catalog
+
+    # if row is not None:
+    #     num_red_potions = row[0]
+    #     num_green_potions = row[1]
+    #     num_blue_potions = row[2]
+    
+    # if num_red_potions > 0:
+    #     catalog.append({
+    #                         "sku": "RED_POTION_0",
+    #                         "name": "red potion",
+    #                         "quantity": num_red_potions,
+    #                         "price": 25,
+    #                         "potion_type": [100, 0, 0, 0],
+    #                     })
+    # if num_green_potions > 0:
+    #     catalog.append({
+    #                         "sku": "GREEN_POTION_0",
+    #                         "name": "green potion",
+    #                         "quantity": num_green_potions,
+    #                         "price": 25,
+    #                         "potion_type": [0, 100, 0, 0],
+    #                     })
+        
+    # if num_blue_potions > 0:
+    #     catalog.append({
+    #                         "sku": "BLUE_POTION_0",
+    #                         "name": "blue potion",
+    #                         "quantity": num_blue_potions,
+    #                         "price": 25,
+    #                         "potion_type": [0, 0, 100, 0],
+    #                     })
+    # return catalog
        
