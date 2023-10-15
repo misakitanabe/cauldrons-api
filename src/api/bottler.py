@@ -62,41 +62,74 @@ def get_bottle_plan():
 
     # Initial logic: bottle all barrels into red potions.
     with db.engine.begin() as connection:
-        row = connection.execute(sqlalchemy.text("SELECT num_red_ml, num_green_ml, num_blue_ml, gold FROM global_inventory")).fetchone()
+        row = connection.execute(sqlalchemy.text("SELECT num_red_ml, num_green_ml, num_blue_ml, num_dark_ml FROM global_inventory")).fetchone()
         if row is not None:
             num_red_ml = row[0]
             num_green_ml = row[1]
             num_blue_ml = row[2]
-            gold = row[3]
+            num_dark_ml = row[3]
 
-        red_count = int(num_red_ml / 100)
-        green_count = int(num_green_ml / 100)
-        blue_count = int(num_blue_ml / 100)
+        potions = connection.execute(sqlalchemy.text("SELECT quantity, potion_type FROM potions ORDER BY quantity ASC")).fetchall()
+        
+    plan = []
+    
+    # creates bottle plan for each potion starting from ones with lowest stock, as they were ordered ascendingly by quantity
+    for potion in potions:
+        quantity = 0
+        potion_type = potion[1]
+        # gets the recipe of each potion, and ml needed of each type for that potion
+        needed_red = potion_type[0]
+        needed_green = potion_type[1]
+        needed_blue = potion_type[2]
+        needed_dark = potion_type[3]
 
-        # Append potions to purchase to plan if planning to buy one or more
-        plan = []
-        if red_count > 0:
-            plan.append(
-                {
-                    "potion_type": [100, 0, 0, 0],
-                    "quantity": red_count,
-                }
-            )
-        if green_count > 0:
-            plan.append(
-                {
-                    "potion_type": [0, 100, 0, 0],
-                    "quantity": green_count,
-                }
-            )
-        if blue_count > 0:
-            plan.append(
-                {
-                    "potion_type": [0, 0, 100, 0],
-                    "quantity": blue_count,
-                }
-            )
-
+        while num_red_ml >= needed_red and num_green_ml >= needed_green and num_blue_ml >= needed_blue and num_dark_ml >= needed_dark:
+            quantity += 1
+            num_red_ml -= needed_red
+            num_green_ml -= needed_green
+            num_blue_ml -= needed_blue
+            num_dark_ml -= needed_dark
+        
+        plan.append (
+            {
+                "potion_type": potion_type,
+                "quantity": quantity
+            }
+        )
+    
     print("Bottlers Plan:", plan)
 
     return plan
+
+
+        # red_count = int(num_red_ml / 100)
+        # green_count = int(num_green_ml / 100)
+        # blue_count = int(num_blue_ml / 100)
+
+        # # Append potions to purchase to plan if planning to buy one or more
+        # plan = []
+        # if red_count > 0:
+        #     plan.append(
+        #         {
+        #             "potion_type": [100, 0, 0, 0],
+        #             "quantity": red_count,
+        #         }
+        #     )
+        # if green_count > 0:
+        #     plan.append(
+        #         {
+        #             "potion_type": [0, 100, 0, 0],
+        #             "quantity": green_count,
+        #         }
+        #     )
+        # if blue_count > 0:
+        #     plan.append(
+        #         {
+        #             "potion_type": [0, 0, 100, 0],
+        #             "quantity": blue_count,
+        #         }
+        #     )
+
+    # print("Bottlers Plan:", plan)
+
+    # return plan
