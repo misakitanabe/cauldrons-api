@@ -76,6 +76,9 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
             else:
                 least = "SMALL_BLUE_BARREL"
 
+        # DELETE LATER HARDCODED FOR NOW
+        least = "SMALL_BLUE_BARREL"
+
         print("Barrels Plan: Trying to buy", least)
 
     # purchase one small barrel if i can afford it
@@ -88,6 +91,18 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                     "quantity": 1,
                 }
             ]
+    
+    # DELETE LATER BUYS MINI BLUE FOR NOW
+    for barrel in wholesale_catalog:
+        if barrel.sku == "MINI_BLUE_BARREL" and barrel.price < gold:
+            print("Successfully added to plan:", barrel.sku)
+            return [
+                {
+                    "sku": barrel.sku,
+                    "quantity": 1,
+                }
+            ]
+     
     
     print("Failed to add to plan:", barrel.sku, "gold:", gold)
     # return none because there are none available in catalog OR i can't afford
