@@ -64,9 +64,6 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
         gold = connection.execute(sqlalchemy.text("SELECT gold FROM global_inventory")).scalar_one()
         potion_row = connection.execute(sqlalchemy.text("SELECT potion_type FROM potions ORDER BY quantity ASC")).fetchone()
 
-        # if gold_row is not None:
-        #     gold = gold_row[0]
-
         if potion_row is not None:
             least_type = potion_row[0]
             if least_type == [100, 0, 0, 0]:
