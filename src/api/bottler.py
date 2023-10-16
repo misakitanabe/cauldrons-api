@@ -29,7 +29,11 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
             num_blue_ml = row[2]
             num_dark_ml = row[3]
 
-        # print("Bottlers delivered BEFORE: red:", num_red_potions, "green:", num_green_potions, "blue:", num_blue_potions)
+        # print how many potions
+        potions = connection.execute(sqlalchemy.text("SELECT sku, quantity FROM potions")).fetchall()
+        print("Bottlers delivered BEFORE")
+        for potion in potions:
+            print(potion[0], potion[1])
 
         for potion in potions_delivered:
             num_red_ml -= potion.potion_type[0] * potion.quantity
@@ -48,44 +52,22 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
         connection.execute(
             sqlalchemy.text("""
                             UPDATE global_inventory SET 
-                            num_red_ml = {}, 
-                            num_green_ml = {}, 
-                            num_blue_ml = {}
-                            num_dark_ml = 
+                            num_red_ml = :num_red_ml, 
+                            num_green_ml = :num_green_ml, 
+                            num_blue_ml = :num_blue_ml,
+                            num_dark_ml = :num_dark_ml
                             """),
             [{"num_red_ml": num_red_ml, "num_green_ml": num_green_ml, "num_blue_ml": num_blue_ml, "num_dark_ml": num_dark_ml}])
+        
+        # print how many potionss
+        potions = connection.execute(sqlalchemy.text("SELECT sku, quantity FROM potions")).fetchall()
+        print("Bottlers delivered AFTER")
+        for potion in potions:
+            print(potion[0], potion[1])
 
     return "OK"
 
-    # with db.engine.begin() as connection:
-    #     row = connection.execute(sqlalchemy.text("SELECT num_red_potions, num_green_potions, num_blue_potions, num_red_ml, num_green_ml, num_blue_ml FROM global_inventory")).fetchone()
-
-    #     if row is not None:
-    #         num_red_potions = row[0]
-    #         num_green_potions = row[1]
-    #         num_blue_potions = row[2]
-    #         num_red_ml = row[3]
-    #         num_green_ml = row[4]
-    #         num_blue_ml = row[5]
-    #     print("Bottlers delivered BEFORE: red:", num_red_potions, "green:", num_green_potions, "blue:", num_blue_potions)
-
-    #     for potion in potions_delivered:
-    #         if potion.potion_type == [100, 0, 0, 0]:
-    #             num_red_potions += potion.quantity
-    #             num_red_ml -= (potion.quantity * 100)
-    #         elif potion.potion_type == [0, 100, 0, 0]:
-    #             num_green_potions += potion.quantity
-    #             num_green_ml -= (potion.quantity * 100)
-    #         elif potion.potion_type == [0, 0, 100, 0]:
-    #             num_blue_potions += potion.quantity
-    #             num_blue_ml -= (potion.quantity * 100)
-
-    #     print("Bottlers delivered AFTER: red:", num_red_potions, "green:", num_green_potions, "blue:", num_blue_potions)
-
-    #     connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_potions = {}, num_green_potions = {}, num_blue_potions = {}".format(num_red_potions, num_green_potions, num_blue_potions)))
-    #     connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_ml = {}, num_green_ml = {}, num_blue_ml = {}".format(num_red_ml, num_green_ml, num_blue_ml)))
-
-    # return "OK"
+   
 
 # Gets called 4 times a day
 @router.post("/plan")
@@ -138,38 +120,3 @@ def get_bottle_plan():
     print("Bottlers Plan:", plan)
 
     return plan
-
-
-        # red_count = int(num_red_ml / 100)
-        # green_count = int(num_green_ml / 100)
-        # blue_count = int(num_blue_ml / 100)
-
-        # # Append potions to purchase to plan if planning to buy one or more
-        # plan = []
-        # if red_count > 0:
-        #     plan.append(
-        #         {
-        #             "potion_type": [100, 0, 0, 0],
-        #             "quantity": red_count,
-        #         }
-        #     )
-        # if green_count > 0:
-        #     plan.append(
-        #         {
-        #             "potion_type": [0, 100, 0, 0],
-        #             "quantity": green_count,
-        #         }
-        #     )
-        # if blue_count > 0:
-        #     plan.append(
-        #         {
-        #             "potion_type": [0, 0, 100, 0],
-        #             "quantity": blue_count,
-        #         }
-        #     )
-
-    # print("Bottlers Plan:", plan)
-
-    # return plan
-
-# def get_plan():
