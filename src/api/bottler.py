@@ -132,12 +132,40 @@ def get_bottle_plan():
         }
     )
 
-    # hardcode green for now for assignment3
-    quantity = int(num_green_ml / 100)
+    # hardcode teal for now for assignment3
+    quantity = 0
+    while num_green_ml >= 50 and num_blue_ml >= 50:
+        quantity += 1
+        num_green_ml -= 50
+        num_blue_ml -= 50
+
+    plan.append (
+        {
+            "potion_type": [0, 50, 50, 0],
+            "quantity": quantity
+        }
+    )
+
+    # hardcode rest for now for assignment3
+    red = int(num_red_ml / 100)
+    green = int(num_green_ml / 100)
+    blue = int(num_blue_ml / 100)
+    plan.append (
+        {
+            "potion_type": [100, 0, 0, 0],
+            "quantity": red
+        }
+    )
     plan.append (
         {
             "potion_type": [0, 100, 0, 0],
-            "quantity": quantity
+            "quantity": green
+        }
+    )
+    plan.append (
+        {
+            "potion_type": [0, 0, 100, 0],
+            "quantity": blue
         }
     )
 
