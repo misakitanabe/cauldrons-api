@@ -147,27 +147,27 @@ def get_bottle_plan():
     )
 
     # hardcode rest for now for assignment3
-    red = int(num_red_ml / 100)
-    green = int(num_green_ml / 100)
-    blue = int(num_blue_ml / 100)
-    plan.append (
-        {
-            "potion_type": [100, 0, 0, 0],
-            "quantity": red
-        }
-    )
-    plan.append (
-        {
-            "potion_type": [0, 100, 0, 0],
-            "quantity": green
-        }
-    )
-    plan.append (
-        {
-            "potion_type": [0, 0, 100, 0],
-            "quantity": blue
-        }
-    )
+    # red = int(num_red_ml / 100)
+    # green = int(num_green_ml / 100)
+    # blue = int(num_blue_ml / 100)
+    # plan.append (
+    #     {
+    #         "potion_type": [100, 0, 0, 0],
+    #         "quantity": red
+    #     }
+    # )
+    # plan.append (
+    #     {
+    #         "potion_type": [0, 100, 0, 0],
+    #         "quantity": green
+    #     }
+    # )
+    # plan.append (
+    #     {
+    #         "potion_type": [0, 0, 100, 0],
+    #         "quantity": blue
+    #     }
+    # )
 
     
     print("Bottlers Plan:", plan)
