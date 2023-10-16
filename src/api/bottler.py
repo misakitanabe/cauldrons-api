@@ -94,28 +94,53 @@ def get_bottle_plan():
     plan = []
     
     # creates bottle plan for each potion starting from ones with lowest stock, as they were ordered ascendingly by quantity
-    for potion in potions:
-        quantity = 0
-        potion_type = potion[1]
-        # gets the recipe of each potion, and ml needed of each type for that potion
-        needed_red = potion_type[0]
-        needed_green = potion_type[1]
-        needed_blue = potion_type[2]
-        needed_dark = potion_type[3]
+    # for potion in potions:
+    #     quantity = 0
+    #     potion_type = potion[1]
+    #     # gets the recipe of each potion, and ml needed of each type for that potion
+    #     needed_red = potion_type[0]
+    #     needed_green = potion_type[1]
+    #     needed_blue = potion_type[2]
+    #     needed_dark = potion_type[3]
 
-        while num_red_ml >= needed_red and num_green_ml >= needed_green and num_blue_ml >= needed_blue and num_dark_ml >= needed_dark:
-            quantity += 1
-            num_red_ml -= needed_red
-            num_green_ml -= needed_green
-            num_blue_ml -= needed_blue
-            num_dark_ml -= needed_dark
+    #     while num_red_ml >= needed_red and num_green_ml >= needed_green and num_blue_ml >= needed_blue and num_dark_ml >= needed_dark:
+    #         quantity += 1
+    #         num_red_ml -= needed_red
+    #         num_green_ml -= needed_green
+    #         num_blue_ml -= needed_blue
+    #         num_dark_ml -= needed_dark
         
-        plan.append (
-            {
-                "potion_type": potion_type,
-                "quantity": quantity
-            }
-        )
+    #     plan.append (
+    #         {
+    #             "potion_type": potion_type,
+    #             "quantity": quantity
+    #         }
+    #     )
+
+
+    # hardcode purple for now for assignment3
+    quantity = 0
+    while num_red_ml >= 50 and num_blue_ml >= 50:
+        quantity += 1
+        num_red_ml -= 50
+        num_blue_ml -= 50
+
+    plan.append (
+        {
+            "potion_type": [50, 0, 50, 0],
+            "quantity": quantity
+        }
+    )
+
+    # hardcode green for now for assignment3
+    quantity = int(num_green_ml / 100)
+    plan.append (
+        {
+            "potion_type": [0, 100, 0, 0],
+            "quantity": quantity
+        }
+    )
+
     
     print("Bottlers Plan:", plan)
 
