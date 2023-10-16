@@ -78,19 +78,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                 least = "SMALL_BLUE_BARREL"
 
         print("Barrels Plan: Trying to buy", least)
-
-            # buys whichever potion has the least stock
-            # if num_red_potions < num_green_potions and num_red_potions < num_blue_potions:
-            #     least = "SMALL_RED_BARREL"
-            # elif num_green_potions < num_blue_potions and num_green_potions < num_red_potions:
-            #     least = "SMALL_GREEN_BARREL"
-            # else:
-            #     least = "SMALL_BLUE_BARREL"
-
-        # print("red:", num_red_potions)
-        # print("green:", num_green_potions)
-        # print("blue:", num_blue_potions)
-
+        
     # purchase one small barrel if i can afford it
     for barrel in wholesale_catalog:
         if barrel.price < gold and barrel.sku == least:
