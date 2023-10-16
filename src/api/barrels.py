@@ -63,7 +63,6 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     with db.engine.begin() as connection:
         gold_row = connection.execute(sqlalchemy.text("SELECT gold FROM global_inventory")).scalar_one()
         potion_row = connection.execute(sqlalchemy.text("SELECT potion_type FROM potions ORDER BY quantity ASC")).fetchone()
-        # row = connection.execute(sqlalchemy.text("SELECT num_red_potions, num_green_potions, num_blue_potions, gold FROM global_inventory")).fetchone()
 
         if gold_row is not None:
             gold = gold_row[0]
@@ -78,7 +77,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                 least = "SMALL_BLUE_BARREL"
 
         print("Barrels Plan: Trying to buy", least)
-        
+
     # purchase one small barrel if i can afford it
     for barrel in wholesale_catalog:
         if barrel.price < gold and barrel.sku == least:
