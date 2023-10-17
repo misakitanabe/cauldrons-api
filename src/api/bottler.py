@@ -31,7 +31,7 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
 
         # print how many potions
         potions = connection.execute(sqlalchemy.text("SELECT sku, quantity FROM potions")).fetchall()
-        print("Bottlers delivered BEFORE")
+        print("Bottlers delivered BEFORE currently have red ml:", num_red_ml, "green:", num_green_ml, "blue:", num_blue_ml)
         for potion in potions:
             print(potion[0], potion[1])
 
@@ -61,7 +61,7 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
         
         # print how many potionss
         potions = connection.execute(sqlalchemy.text("SELECT sku, quantity FROM potions")).fetchall()
-        print("Bottlers delivered AFTER")
+        print("Bottlers delivered AFTER currently have red ml:", num_red_ml, "green:", num_green_ml, "blue:", num_blue_ml)
         for potion in potions:
             print(potion[0], potion[1])
 
@@ -117,6 +117,7 @@ def get_bottle_plan():
     #         }
     #     )
 
+    print("Bottlers Plan currently have red ml:", num_red_ml, "green:", num_green_ml, "blue:", num_blue_ml)
 
     # hardcode purple for now for assignment3
     quantity = 0
@@ -125,12 +126,13 @@ def get_bottle_plan():
         num_red_ml -= 50
         num_blue_ml -= 50
 
-    plan.append (
-        {
-            "potion_type": [50, 0, 50, 0],
-            "quantity": quantity
-        }
-    )
+    if quantity > 0:
+        plan.append (
+            {
+                "potion_type": [50, 0, 50, 0],
+                "quantity": quantity
+            }
+        )
 
     # hardcode teal for now for assignment3
     quantity = 0
@@ -139,35 +141,39 @@ def get_bottle_plan():
         num_green_ml -= 50
         num_blue_ml -= 50
 
-    plan.append (
-        {
-            "potion_type": [0, 50, 50, 0],
-            "quantity": quantity
-        }
-    )
+    if quantity > 0:
+        plan.append (
+            {
+                "potion_type": [0, 50, 50, 0],
+                "quantity": quantity
+            }
+        )
 
     # hardcode rest for now for assignment3
     red = int(num_red_ml / 200)
     green = int(num_green_ml / 200)
     blue = int(num_blue_ml / 200)
-    plan.append (
-        {
-            "potion_type": [100, 0, 0, 0],
-            "quantity": red
-        }
-    )
-    plan.append (
-        {
-            "potion_type": [0, 100, 0, 0],
-            "quantity": green
-        }
-    )
-    plan.append (
-        {
-            "potion_type": [0, 0, 100, 0],
-            "quantity": blue
-        }
-    )
+    if red > 0:
+        plan.append (
+            {
+                "potion_type": [100, 0, 0, 0],
+                "quantity": red
+            }
+        )
+    if green > 0:
+        plan.append (
+            {
+                "potion_type": [0, 100, 0, 0],
+                "quantity": green
+            }
+        )
+    if blue > 0:
+        plan.append (
+            {
+                "potion_type": [0, 0, 100, 0],
+                "quantity": blue
+            }
+        )
 
     
     print("Bottlers Plan:", plan)
