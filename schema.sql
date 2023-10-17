@@ -22,6 +22,6 @@ create table
     potions_id integer null,
     quantity integer null,
     constraint cart_items_pkey primary key (id),
-    constraint cart_items_cart_id_fkey foreign key (cart_id) references carts (id),
+    constraint cart_items_cart_id_fkey foreign key (cart_id) references carts (id) on delete cascade,
     constraint cart_items_potions_id_fkey foreign key (potions_id) references potions (id)
   ) tablespace pg_default;
