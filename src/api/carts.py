@@ -110,6 +110,8 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
 
     gold_made = new_gold - old_gold
 
+    print("checkout successful")
+
     return {
         "total_potions_bought": "integer",
         "total_gold_paid": gold_made
