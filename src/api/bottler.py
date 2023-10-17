@@ -151,7 +151,7 @@ def get_bottle_plan():
 
     # hardcode rest for now for assignment3
     red = int(num_red_ml / 200)
-    green = int(num_green_ml / 200)
+    green = int(num_green_ml / 100) - 1
     blue = int(num_blue_ml / 200)
     if red > 0:
         plan.append (

@@ -14,8 +14,8 @@ router = APIRouter(
 class NewCart(BaseModel):
     customer: str
 
-carts = {}
-cart_counter = 0
+# carts = {}
+# cart_counter = 0
 
 @router.post("/")
 def create_cart(new_cart: NewCart):
@@ -26,13 +26,6 @@ def create_cart(new_cart: NewCart):
     print("CREATE CART: new cart id", id)
     return {"cart_id": id}
         
-    # global cart_counter
-    # global carts
-    
-    # cart_counter += 1
-    # carts[cart_counter] = []
-    # return {"cart_id": cart_counter}
-
 
 @router.get("/{cart_id}")
 def get_cart(cart_id: int):
@@ -59,24 +52,6 @@ def set_item_quantity(cart_id: int, item_sku: str, cart_item: CartItem):
 
     print("Succesfully added item to cart")
     return "OK"
-
-
-    # global cart_counter
-    # global carts
-
-    # print("Carts set_item_quantity:", cart_item, "for", item_sku, "cart-id:", cart_id)
-
-    # # if item to set the quantity of already exists in cart, update the quantity to new quantity in cart_item
-    # for order in carts[cart_id]:
-    #     if order[0] == item_sku:
-    #         order[1] = cart_item.quantity
-    #         print("Succesfully updated quantity of item")
-    #         return "OK"
-
-    # # else, adds that item to cart with quantity in cart_item
-    # carts[cart_id].append([item_sku, cart_item.quantity])
-    # print("Succesfully added item to cart")
-    # return "OK"
 
 
 class CartCheckout(BaseModel):
