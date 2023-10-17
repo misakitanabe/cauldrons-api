@@ -66,12 +66,20 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
         if potion_row is not None:
             least_type = potion_row[0]
-            if least_type == [100, 0, 0, 0]:
+            least_index = least_type.index(max(least_type))
+            if least_index == 0:
                 least = "SMALL_RED_BARREL"
-            elif least_type == [0, 100, 0, 0]:
+            elif least_index == 1:
                 least = "SMALL_GREEN_BARREL"
             else:
                 least = "SMALL_BLUE_BARREL"
+            #     
+            # if least_type == [100, 0, 0, 0]:
+            #     least = "SMALL_RED_BARREL"
+            # elif least_type == [0, 100, 0, 0]:
+            #     least = "SMALL_GREEN_BARREL"
+            # else:
+            #     least = "SMALL_BLUE_BARREL"
 
         # DELETE LATER HARDCODED FOR NOW
         least = "SMALL_BLUE_BARREL"

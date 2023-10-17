@@ -41,14 +41,30 @@ class CartItem(BaseModel):
 @router.post("/{cart_id}/items/{item_sku}")
 def set_item_quantity(cart_id: int, item_sku: str, cart_item: CartItem):
     """ """
+
     with db.engine.begin() as connection:
-        connection.execute(
+        # Check if item already exists in cart
+        cart = connection.execute(
                 sqlalchemy.text("""
-                                    INSERT INTO cart_items (cart_id, quantity, potions_id) 
-                                    SELECT :cart_id, :quantity, potions.id 
-                                    FROM potions WHERE potions.sku = :item_sku
-                                """),
-                [{"cart_id": cart_id, "quantity": cart_item.quantity, "item_sku": item_sku}])
+                                    SELECT cart_id, potions_id 
+                                    FROM cart_items 
+                                    WHERE cart_id = :cart_id AND potions_id = 
+                                    (SELECT id FROM potions WHERE potions.sku = :item_sku)
+                                """), 
+                [{"cart_id": cart_id, "item_sku": item_sku}]).fetchone()
+        
+        # Add to cart if it doesn't exist already
+        if cart is None:
+            connection.execute(
+                    sqlalchemy.text("""
+                                        INSERT INTO cart_items (cart_id, quantity, potions_id) 
+                                        SELECT :cart_id, :quantity, potions.id 
+                                        FROM potions WHERE potions.sku = :item_sku
+                                    """),
+                    [{"cart_id": cart_id, "quantity": cart_item.quantity, "item_sku": item_sku}])
+        # Update item quantity in cart if it already exists in cart
+        # else:
+            
 
     print("Succesfully added item to cart")
     return "OK"
@@ -85,7 +101,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
                                     WHERE cart_items.cart_id = :cart_id
                                     RETURNING gold;
                                 """),
-                [{"cart_id": cart_id}])
+                [{"cart_id": cart_id}]).scalar_one()
         
         print("Cart checkout AFTER gold:", new_gold)
 
