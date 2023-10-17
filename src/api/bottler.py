@@ -119,32 +119,17 @@ def get_bottle_plan():
 
     print("Bottlers Plan currently have red ml:", num_red_ml, "green:", num_green_ml, "blue:", num_blue_ml)
 
-    # hardcode purple for now for assignment3
+    # hardcode brown for now for assignment3
     quantity = 0
-    while num_red_ml >= 50 and num_blue_ml >= 50:
+    while num_red_ml >= 50 and num_green_ml >= 50:
         quantity += 1
         num_red_ml -= 50
-        num_blue_ml -= 50
-
-    if quantity > 0:
-        plan.append (
-            {
-                "potion_type": [50, 0, 50, 0],
-                "quantity": quantity
-            }
-        )
-
-    # hardcode teal for now for assignment3
-    quantity = 0
-    while num_green_ml >= 50 and num_blue_ml >= 50:
-        quantity += 1
         num_green_ml -= 50
-        num_blue_ml -= 50
 
     if quantity > 0:
         plan.append (
             {
-                "potion_type": [0, 50, 50, 0],
+                "potion_type": [50, 50, 0, 0],
                 "quantity": quantity
             }
         )
