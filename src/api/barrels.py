@@ -91,17 +91,9 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     #             }
     #         ]
     
-    # DELETE LATER BUYS MINI RED AND GREEN FOR NOW
+    # DELETE LATER BUYS MINI BLUE FOR NOW
     for barrel in wholesale_catalog:
-        if barrel.sku == "MINI_RED_BARREL" and barrel.price < gold:
-            print("Successfully added to plan:", barrel.sku)
-            return [
-                {
-                    "sku": barrel.sku,
-                    "quantity": 1,
-                }
-            ]
-        if barrel.sku == "MINI_GREEN_BARREL" and barrel.price < gold:
+        if barrel.sku == "MINI_BLUE_BARREL" and barrel.price < gold:
             print("Successfully added to plan:", barrel.sku)
             return [
                 {

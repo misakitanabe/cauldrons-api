@@ -92,74 +92,63 @@ def get_bottle_plan():
         potions = connection.execute(sqlalchemy.text("SELECT quantity, potion_type FROM potions ORDER BY quantity ASC")).fetchall()
         
     plan = []
-    
-    # creates bottle plan for each potion starting from ones with lowest stock, as they were ordered ascendingly by quantity
-    # for potion in potions:
-    #     quantity = 0
-    #     potion_type = potion[1]
-    #     # gets the recipe of each potion, and ml needed of each type for that potion
-    #     needed_red = potion_type[0]
-    #     needed_green = potion_type[1]
-    #     needed_blue = potion_type[2]
-    #     needed_dark = potion_type[3]
-
-    #     while num_red_ml >= needed_red and num_green_ml >= needed_green and num_blue_ml >= needed_blue and num_dark_ml >= needed_dark:
-    #         quantity += 1
-    #         num_red_ml -= needed_red
-    #         num_green_ml -= needed_green
-    #         num_blue_ml -= needed_blue
-    #         num_dark_ml -= needed_dark
-        
-    #     plan.append (
-    #         {
-    #             "potion_type": potion_type,
-    #             "quantity": quantity
-    #         }
-    #     )
 
     print("Bottlers Plan currently have red ml:", num_red_ml, "green:", num_green_ml, "blue:", num_blue_ml)
 
-    # hardcode brown for now for assignment3
+    # hardcode purple for now for assignment3
     quantity = 0
-    while num_red_ml >= 50 and num_green_ml >= 50:
+    while num_red_ml >= 50 and num_blue_ml >= 50:
         quantity += 1
         num_red_ml -= 50
-        num_green_ml -= 50
+        num_blue_ml -= 50
 
     if quantity > 0:
         plan.append (
             {
-                "potion_type": [50, 50, 0, 0],
+                "potion_type": [50, 0, 50, 0],
                 "quantity": quantity
             }
         )
 
-    # hardcode rest for now for assignment3
-    red = int(num_red_ml / 200)
-    green = int(num_green_ml / 100) - 1
-    blue = int(num_blue_ml / 200)
-    if red > 0:
+    # hardcode teal for now for assignment3
+    quantity = 0
+    while num_green_ml >= 50 and num_blue_ml >= 50:
+        quantity += 1
+        num_green_ml -= 50
+        num_blue_ml -= 50
+
+    if quantity > 0:
         plan.append (
             {
-                "potion_type": [100, 0, 0, 0],
-                "quantity": red
-            }
-        )
-    if green > 0:
-        plan.append (
-            {
-                "potion_type": [0, 100, 0, 0],
-                "quantity": green
-            }
-        )
-    if blue > 0:
-        plan.append (
-            {
-                "potion_type": [0, 0, 100, 0],
-                "quantity": blue
+                "potion_type": [0, 50, 50, 0],
+                "quantity": quantity
             }
         )
 
+    # creates bottle plan for each potion starting from ones with lowest stock, as they were ordered ascendingly by quantity
+    for potion in potions:
+        quantity = 0
+        potion_type = potion[1]
+        # gets the recipe of each potion, and ml needed of each type for that potion
+        needed_red = potion_type[0]
+        needed_green = potion_type[1]
+        needed_blue = potion_type[2]
+        needed_dark = potion_type[3]
+
+        while num_red_ml >= needed_red and num_green_ml >= needed_green and num_blue_ml >= needed_blue and num_dark_ml >= needed_dark:
+            quantity += 1
+            num_red_ml -= needed_red
+            num_green_ml -= needed_green
+            num_blue_ml -= needed_blue
+            num_dark_ml -= needed_dark
+        
+        if quantity > 0:
+            plan.append (
+                {
+                    "potion_type": potion_type,
+                    "quantity": quantity
+                }
+            )
     
     print("Bottlers Plan:", plan)
 
