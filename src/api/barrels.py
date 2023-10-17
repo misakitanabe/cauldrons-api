@@ -73,13 +73,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                 least = "SMALL_GREEN_BARREL"
             else:
                 least = "SMALL_BLUE_BARREL"
-            #     
-            # if least_type == [100, 0, 0, 0]:
-            #     least = "SMALL_RED_BARREL"
-            # elif least_type == [0, 100, 0, 0]:
-            #     least = "SMALL_GREEN_BARREL"
-            # else:
-            #     least = "SMALL_BLUE_BARREL"
+            
 
         # DELETE LATER HARDCODED FOR NOW
         least = "SMALL_BLUE_BARREL"
@@ -87,8 +81,19 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
         print("Barrels Plan: Trying to buy", least)
 
     # purchase one small barrel if i can afford it
+    # for barrel in wholesale_catalog:
+    #     if barrel.price < gold and barrel.sku == least:
+    #         print("Successfully added to plan:", barrel.sku)
+    #         return [
+    #             {
+    #                 "sku": barrel.sku,
+    #                 "quantity": 1,
+    #             }
+    #         ]
+    
+    # DELETE LATER BUYS MINI RED AND GREEN FOR NOW
     for barrel in wholesale_catalog:
-        if barrel.price < gold and barrel.sku == least:
+        if barrel.sku == "MINI_RED_BARREL" and barrel.price < gold:
             print("Successfully added to plan:", barrel.sku)
             return [
                 {
@@ -96,10 +101,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                     "quantity": 1,
                 }
             ]
-    
-    # DELETE LATER BUYS MINI BLUE FOR NOW
-    for barrel in wholesale_catalog:
-        if barrel.sku == "MINI_BLUE_BARREL" and barrel.price < gold:
+        if barrel.sku == "MINI_GREEN_BARREL" and barrel.price < gold:
             print("Successfully added to plan:", barrel.sku)
             return [
                 {
