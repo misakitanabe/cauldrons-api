@@ -82,14 +82,15 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
                                 
 
         # Update potion inventory in potions table
-        connection.execute(
+        potions_bought = connection.execute(
                 sqlalchemy.text("""
                                     UPDATE potions
                                     SET quantity = potions.quantity - cart_items.quantity
                                     FROM cart_items
-                                    WHERE potions.id = cart_items.potions_id and cart_items.cart_id = :cart_id;
+                                    WHERE potions.id = cart_items.potions_id and cart_items.cart_id = :cart_id
+                                    RETURNING cart_items.quantity;
                                 """),
-                [{"cart_id": cart_id}])
+                [{"cart_id": cart_id}]).scalar_one()
         
         # Update gold in global_inventory table
         new_gold = connection.execute(
@@ -113,7 +114,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
     print("checkout successful")
 
     return {
-        "total_potions_bought": "integer",
+        "total_potions_bought": potions_bought,
         "total_gold_paid": gold_made
     }
         
