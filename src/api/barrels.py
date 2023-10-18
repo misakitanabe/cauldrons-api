@@ -101,6 +101,14 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                     "quantity": 1,
                 }
             ]
+        if barrel.sku == "MINI_GREEN_BARREL" and barrel.price < gold:
+            print("Successfully added to plan:", barrel.sku)
+            return [
+                {
+                    "sku": barrel.sku,
+                    "quantity": 1,
+                }
+            ]
      
     
     print("Failed to add to plan:", barrel.sku, "gold:", gold)
