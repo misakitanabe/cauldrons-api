@@ -59,6 +59,8 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
 def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     """ """
     print(wholesale_catalog)
+
+    plan = []
     
     with db.engine.begin() as connection:
         gold = connection.execute(sqlalchemy.text("SELECT gold FROM global_inventory")).scalar_one()
@@ -78,7 +80,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
         # DELETE LATER HARDCODED FOR NOW
         least = "SMALL_BLUE_BARREL"
 
-        print("Barrels Plan: Trying to buy", least)
+        # print("Barrels Plan: Trying to buy", least)
 
     # purchase one small barrel if i can afford it
     # for barrel in wholesale_catalog:
@@ -95,24 +97,22 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     for barrel in wholesale_catalog:
         if barrel.sku == "MINI_BLUE_BARREL" and barrel.price < gold:
             print("Successfully added to plan:", barrel.sku)
-            return [
+            plan.append(
                 {
                     "sku": barrel.sku,
                     "quantity": 1,
                 }
-            ]
+            )
         if barrel.sku == "MINI_GREEN_BARREL" and barrel.price < gold:
             print("Successfully added to plan:", barrel.sku)
-            return [
+            plan.append(
                 {
                     "sku": barrel.sku,
                     "quantity": 1,
-                }
-            ]
+                })
      
     
-    print("Failed to add to plan:", barrel.sku, "gold:", gold)
-    # return none because there are none available in catalog OR i can't afford
-    return []
+    print("Barrels plan:", plan, "gold:", gold)
+    return plan
 
 
