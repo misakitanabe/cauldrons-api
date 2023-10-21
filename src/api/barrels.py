@@ -73,8 +73,10 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                 least = "SMALL_RED_BARREL"
             elif least_index == 1:
                 least = "SMALL_GREEN_BARREL"
-            else:
+            elif least_index == 2:
                 least = "SMALL_BLUE_BARREL"
+            else:
+                least = "SMALL_GREEN_BARREL"
             
 
         # DELETE LATER HARDCODED FOR NOW
