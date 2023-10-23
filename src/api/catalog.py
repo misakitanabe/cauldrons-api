@@ -15,10 +15,15 @@ def get_catalog():
     # Can return a max of 20 items.
     # CALL DATABASE
     with db.engine.begin() as connection:
-        # row = connection.execute(sqlalchemy.text("SELECT num_red_potions, num_green_potions, num_blue_potions FROM global_inventory")).fetchone()
-        rows = connection.execute(sqlalchemy.text("SELECT sku, name, quantity, price, potion_type FROM potions WHERE quantity > 0")).fetchall()
+        potions = connection.execute(sqlalchemy.text("""
+                                                    SELECT p.sku, p.name, SUM(trans.change) AS quantity, p.price, p.potion_type 
+                                                    FROM potions AS p 
+                                                    LEFT JOIN potion_ledger_entries AS trans ON p.id = trans.potion_id
+                                                    WHERE quantity > 0
+                                                    GROUP BY p.id
+                                                    """)).fetchall()
 
-        for row in rows:
+        for row in potions:
             catalog.append({
                 "sku": row[0],
                 "name": row[1],
@@ -29,35 +34,4 @@ def get_catalog():
             
     return catalog
 
-    # if row is not None:
-    #     num_red_potions = row[0]
-    #     num_green_potions = row[1]
-    #     num_blue_potions = row[2]
-    
-    # if num_red_potions > 0:
-    #     catalog.append({
-    #                         "sku": "RED_POTION_0",
-    #                         "name": "red potion",
-    #                         "quantity": num_red_potions,
-    #                         "price": 25,
-    #                         "potion_type": [100, 0, 0, 0],
-    #                     })
-    # if num_green_potions > 0:
-    #     catalog.append({
-    #                         "sku": "GREEN_POTION_0",
-    #                         "name": "green potion",
-    #                         "quantity": num_green_potions,
-    #                         "price": 25,
-    #                         "potion_type": [0, 100, 0, 0],
-    #                     })
-        
-    # if num_blue_potions > 0:
-    #     catalog.append({
-    #                         "sku": "BLUE_POTION_0",
-    #                         "name": "blue potion",
-    #                         "quantity": num_blue_potions,
-    #                         "price": 25,
-    #                         "potion_type": [0, 0, 100, 0],
-    #                     })
-    # return catalog
-       
+   
