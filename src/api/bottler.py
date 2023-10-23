@@ -85,6 +85,7 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
 
 def insert_potion_entry(description, additional_quantity, potion_type):
     with db.engine.begin() as connection:
+        print("INSERTING POTION ROW description:", description)
         connection.execute(
                 sqlalchemy.text("""
                                 INSERT INTO potion_ledger_entries (description, potion_id, change)
