@@ -70,54 +70,41 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
                             + str(blue_diff) + ' blue mls, '
                             + str(dark_diff) + ' dark mls')
             print(description)
-            # add a new row into barrel_transactions schema
-            trans_id = insert_barrel_trans(description)
 
             # update gold by adding row into gold_ledger_entries
             connection.execute(
                 sqlalchemy.text("""
-                                INSERT INTO gold_ledger_entries (trans_id, change)
+                                INSERT INTO gold_ledger_entries (description, change)
                                 VALUES
-                                (:trans_id, :gold_diff)
+                                (:description, :gold_diff)
                                 """),
-                [{"trans_id": trans_id, "gold_diff" : gold_diff}])
+                [{"description": description, "gold_diff" : gold_diff}])
 
             # update ml by adding row into ml_ledger_entries
             if red_diff > 0:
-                insert_ml_entry(trans_id, 'RED', red_diff)
+                insert_ml_entry(description, 'RED', red_diff)
 
             if green_diff > 0:
-                insert_ml_entry(trans_id, 'GREEN', green_diff)
+                insert_ml_entry(description, 'GREEN', green_diff)
 
             if blue_diff > 0:
-                insert_ml_entry(trans_id, 'BLUE', blue_diff)
+                insert_ml_entry(description, 'BLUE', blue_diff)
 
             if dark_diff > 0:
-                insert_ml_entry(trans_id, 'DARK', dark_diff)
+                insert_ml_entry(description, 'DARK', dark_diff)
 
     return "OK"
 
-def insert_barrel_trans(description):
-    with db.engine.begin() as connection:
-        trans_id = connection.execute(
-                sqlalchemy.text("""
-                                INSERT INTO barrel_transactions (description) 
-                                VALUES (:description)
-                                RETURNING id
-                                """),
-                [{"description": description}]).scalar_one()
-        
-    return trans_id
 
-def insert_ml_entry(trans_id, ml_type, diff):
+def insert_ml_entry(description, ml_type, diff):
     with db.engine.begin() as connection:
         connection.execute(
                 sqlalchemy.text("""
-                                INSERT INTO ml_ledger_entries (trans_id, type, change)
+                                INSERT INTO ml_ledger_entries (description, type, change)
                                 VALUES
-                                (:trans_id, :ml_type, :diff)
+                                (:description, :ml_type, :diff)
                                 """),
-                [{"trans_id": trans_id, "ml_type" : ml_type, "diff" : diff}])
+                [{"description": description, "ml_type" : ml_type, "diff" : diff}])
 
 
 # Gets called once a day
