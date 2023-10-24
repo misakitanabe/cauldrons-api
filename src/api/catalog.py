@@ -23,7 +23,7 @@ def get_catalog():
                                                     """)).fetchall()
 
         for row in potions:
-            if row[2] is not None and row[2] is not 0:
+            if row[2] is not None and row[2] != 0:
                 catalog.append({
                     "sku": row[0],
                     "name": row[1],
