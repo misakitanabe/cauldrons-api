@@ -106,7 +106,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
             gold_paid += gold
         
         # delete cart after checkout
-        connection.execute(sqlalchemy.text("DELETE FROM carts WHERE id = :cart_id"), [{"cart_id": cart_id}])
+        # connection.execute(sqlalchemy.text("DELETE FROM carts WHERE id = :cart_id"), [{"cart_id": cart_id}])
 
     print("checkout successful")
 
