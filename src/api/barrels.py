@@ -129,13 +129,13 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
             least_type = potion_row[0]
             least_index = least_type.index(max(least_type))
             if least_index == 0:
-                least = "MEDIUM_RED_BARREL"
+                least = "LARGE_RED_BARREL"
             elif least_index == 1:
-                least = "MEDIUM_GREEN_BARREL"
-            # elif least_index == 2:
-            #     least = "SMALL_BLUE_BARREL"
+                least = "LARGE_GREEN_BARREL"
+            elif least_index == 2:
+                least = "LARGE_BLUE_BARREL"
             else:
-                least = "MEDIUM_GREEN_BARREL"
+                least = "LARGE_GREEN_BARREL"
 
         if gold is None:
             gold = 0
@@ -156,7 +156,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                 )
             else:
                 print("Not enough gold:", gold)
-                least = "SMALL_RED_BARREL"
+                least = "MEDIUM_RED_BARREL"
     
     print("Barrels plan:", plan, "gold:", gold)
     return plan
