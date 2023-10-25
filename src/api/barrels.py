@@ -154,6 +154,15 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                         "quantity": 1,
                     }
                 )
+                if least == "LARGE_RED_BARREL":
+                    least = "LARGE_BLUE_BARREL"
+
+                if least == "LARGE_BLUE_BARREL":
+                    least = "LARGE_GREEN_BARREL"
+
+                if least == "LARGE_GREEN_BARREL":
+                    least = "LARGE_RED_BARREL"
+
             else:
                 print("Not enough gold:", gold)
                 least = "MEDIUM_RED_BARREL"
