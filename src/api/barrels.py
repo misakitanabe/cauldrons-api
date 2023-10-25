@@ -117,55 +117,68 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     
     with db.engine.begin() as connection:
         gold = connection.execute(sqlalchemy.text("SELECT SUM(change) FROM gold_ledger_entries")).scalar_one()
-        potion_row = connection.execute(sqlalchemy.text("""
-                                                        SELECT potion_type 
-                                                        FROM potions AS p 
-                                                        LEFT JOIN potion_ledger_entries AS entries ON p.id = entries.potion_id
-                                                        GROUP BY p.id
-                                                        ORDER BY SUM(entries.change) ASC
-                                                        """)).fetchone()
+        # potion_row = connection.execute(sqlalchemy.text("""
+        #                                                 SELECT potion_type 
+        #                                                 FROM potions AS p 
+        #                                                 LEFT JOIN potion_ledger_entries AS entries ON p.id = entries.potion_id
+        #                                                 GROUP BY p.id
+        #                                                 ORDER BY SUM(entries.change) ASC
+        #                                                 """)).fetchone()
 
-        if potion_row is not None:
-            least_type = potion_row[0]
-            least_index = least_type.index(max(least_type))
-            if least_index == 0:
-                least = "LARGE_RED_BARREL"
-            elif least_index == 1:
-                least = "LARGE_GREEN_BARREL"
-            elif least_index == 2:
-                least = "LARGE_BLUE_BARREL"
-            else:
-                least = "LARGE_GREEN_BARREL"
+        # if potion_row is not None:
+        #     least_type = potion_row[0]
+        #     least_index = least_type.index(max(least_type))
+        #     if least_index == 0:
+        #         least = "RED_BARREL"
+        #     elif least_index == 1:
+        #         least = "GREEN_BARREL"
+        #     elif least_index == 2:
+        #         least = "BLUE_BARREL"
+        #     else:
+        #         least = "GREEN_BARREL"
 
         if gold is None:
             gold = 0
             
 
-        print("Barrels Plan: Trying to buy", least)
+        # print("Barrels Plan: Trying to buy", least)
 
     # purchase one small barrel if i can afford it
     for barrel in wholesale_catalog:
-        if barrel.sku == least:
-            if barrel.price <= gold:
-                print("Successfully added to plan:", barrel.sku)
-                plan.append(
-                    {
-                        "sku": barrel.sku,
-                        "quantity": 1,
-                    }
-                )
-                if least == "LARGE_RED_BARREL":
-                    least = "LARGE_BLUE_BARREL"
+        if gold >= barrel.price and len(plan) < 4:
+            print("Successfully added to plan:", barrel.sku)
+            plan.append(
+                {
+                    "sku": barrel.sku,
+                    "quantity": 1,
+                }
+            )
+            gold -= barrel.price
+        else:
+            print("Not enough gold:", gold)
 
-                if least == "LARGE_BLUE_BARREL":
-                    least = "LARGE_GREEN_BARREL"
+    # for barrel in wholesale_catalog:
+    #     if least in barrel.sku:
+    #         if barrel.price <= gold:
+    #             print("Successfully added to plan:", barrel.sku)
+    #             plan.append(
+    #                 {
+    #                     "sku": barrel.sku,
+    #                     "quantity": 1,
+    #                 }
+    #             )
+    #             if least == "RED_BARREL":
+    #                 least = "BLUE_BARREL"
 
-                if least == "LARGE_GREEN_BARREL":
-                    least = "LARGE_RED_BARREL"
+    #             if least == "BLUE_BARREL":
+    #                 least = "GREEN_BARREL"
 
-            else:
-                print("Not enough gold:", gold)
-                least = "MEDIUM_RED_BARREL"
+    #             if least == "GREEN_BARREL":
+    #                 least = "RED_BARREL"
+
+    #         else:
+    #             print("Not enough gold:", gold)
+    #             least = "MEDIUM_RED_BARREL"
     
     print("Barrels plan:", plan, "gold:", gold)
     return plan
