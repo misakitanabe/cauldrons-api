@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from src.api import auth
 import sqlalchemy
 from src import database as db
+# from src.database import cart_items
 from enum import Enum
 
 router = APIRouter(
@@ -54,19 +55,90 @@ def search_orders(
     time is 5 total line items.
     """
 
-    return {
-        "previous": "",
-        "next": "",
-        "results": [
-            {
-                "line_item_id": 1,
-                "item_sku": "1 oblivion potion",
-                "customer_name": "Scaramouche",
-                "line_item_total": 50,
-                "timestamp": "2021-01-01T00:00:00Z",
-            }
-        ],
-    }
+    limit = 5
+    # prev = '0'
+    if search_page != '':
+        offset = (int)(search_page)
+        next = (search_page)
+    else:
+        offset = 0
+        next = ""
+
+    # set order_by based on sort_col
+    if sort_col is search_sort_options.customer_name:
+        order_by = db.carts.c.customer_name
+    elif sort_col is search_sort_options.item_sku:
+        order_by = db.potions.c.sku
+    elif sort_col is search_sort_options.line_item_total:
+        order_by = db.cart_items.c.quantity
+    elif sort_col is search_sort_options.timestamp:
+        order_by = db.potion_ledger_entries.c.created_at
+    else:
+        assert False
+
+    # set order_by based on sort_order
+    if sort_order == search_sort_order.desc:
+        if sort_col is search_sort_options.line_item_total:
+            order_by = sqlalchemy.asc(order_by)
+        else:
+            order_by = sqlalchemy.desc(order_by)
+    else:
+        if sort_col is search_sort_options.line_item_total:
+            order_by = sqlalchemy.desc(order_by)
+        else:
+            order_by = sqlalchemy.asc(order_by)
+
+    # create query
+    stmt = (
+        sqlalchemy.select(
+            db.cart_items.c.id,
+            db.potions.c.sku,
+            db.carts.c.customer,
+            db.cart_items.c.quantity,
+            db.potion_ledger_entries.c.created_at
+        )
+        .join(db.potions, db.potions.c.id == db.cart_items.c.potions_id)
+        .join(db.carts, db.carts.c.id == db.cart_items.c.cart_id)
+        .join(db.potion_ledger_entries, db.potion_ledger_entries.c.cart_items_id == db.cart_items.c.id)
+        .limit(limit)
+        .offset(offset)
+        .order_by(order_by) 
+    )
+
+    # filter only if name parameter is passed
+    if customer_name != "":
+        stmt = stmt.where(db.carts.c.customer.ilike(f"%{customer_name}%"))
+
+    # filter only if potion_sku parameter is passed
+    if potion_sku != "":
+        stmt = stmt.where(db.potions.c.sku.ilike(f"%{potion_sku}%"))
+
+    # execute transaction
+    with db.engine.connect() as conn:
+        results = []
+        res = conn.execute(stmt)
+
+        for i, row in enumerate(res):
+            if i < 5:
+                results.append(
+                    {
+                        "line_item_id": row.id,
+                        "item_sku": row.sku,
+                        "customer_name": row.customer,
+                        "line_item_total": row.quantity,
+                        "timestamp": row.created_at
+                    }
+                )
+            else:
+                if next == "":
+                    next = '0'
+                next = (int)(next) + 5
+
+        return {
+            "previous": "",
+            "next": next,
+            "results": results
+        }
 
 
 class NewCart(BaseModel):
@@ -77,7 +149,14 @@ class NewCart(BaseModel):
 def create_cart(new_cart: NewCart):
     """ """
     with db.engine.begin() as connection:
-        id = connection.execute(sqlalchemy.text("INSERT INTO carts DEFAULT VALUES RETURNING *")).scalar_one()
+        id = connection.execute(
+            sqlalchemy.text("""
+                            INSERT INTO carts (id, customer) 
+                            VALUES
+                            (DEFAULT, :name)
+                            RETURNING id;
+                            """),
+            [{"name": new_cart.customer}]).scalar_one()
     
     print("CREATE CART: new cart id", id)
     return {"cart_id": id}
@@ -145,7 +224,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
         # get all items in cart 
         items = connection.execute(
                 sqlalchemy.text("""
-                                    SELECT potions_id, quantity
+                                    SELECT potions_id, quantity, id
                                     FROM cart_items
                                     WHERE cart_id = :cart_id
                                 """),
@@ -154,10 +233,11 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
         for item in items:
             potion_id = item[0]
             quantity = item[1]
+            cart_items_id = item[2]
             description = 'Sold ' + str(quantity) + ' id=' + str(potion_id) + ' potions to cart ' + str(cart_id) 
             print(description)
-            insert_potion_entry(description, potion_id, -1 * quantity)
-            gold = insert_gold_entry(description, potion_id, quantity)
+            insert_potion_entry(description, potion_id, -1 * quantity, cart_items_id)
+            gold = insert_gold_entry(description, potion_id, quantity, cart_items_id)
             print("gold paid:", gold)
             
             potions_bought += quantity
@@ -173,30 +253,31 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
         "total_gold_paid": gold_paid
     }
         
-def insert_potion_entry(description, potion_id, change):
+def insert_potion_entry(description, potion_id, change, cart_items_id):
     with db.engine.begin() as connection:
         connection.execute(
                 sqlalchemy.text("""
-                                INSERT INTO potion_ledger_entries (description, potion_id, change)
+                                INSERT INTO potion_ledger_entries (description, potion_id, change, cart_items_id)
                                 VALUES
                                 (
                                 :description, 
                                 :potion_id, 
-                                :change
+                                :change,
+                                :cart_items_id
                                 )
                                 """),
-                [{"description" : description, "potion_id": potion_id, "change": change}])
+                [{"description" : description, "potion_id": potion_id, "change": change, "cart_items_id": cart_items_id}])
         
-def insert_gold_entry(description, potion_id, quantity):
+def insert_gold_entry(description, potion_id, quantity, cart_items_id):
     with db.engine.begin() as connection:
         gold_paid = connection.execute(
                 sqlalchemy.text("""
-                                INSERT INTO gold_ledger_entries (description, change)
+                                INSERT INTO gold_ledger_entries (description, change, cart_items_id)
                                 VALUES
-                                (:description, :quantity * (SELECT price FROM potions WHERE :potion_id = potions.id))
+                                (:description, :quantity * (SELECT price FROM potions WHERE :potion_id = potions.id), :cart_items_id)
                                 RETURNING change
                                 """),
-                [{"description": description, "potion_id" : potion_id, "quantity" : quantity}]).scalar_one()
+                [{"description": description, "potion_id" : potion_id, "quantity" : quantity, "cart_items_id": cart_items_id}]).scalar_one()
         
         return gold_paid
         

@@ -143,7 +143,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
         # print("Barrels Plan: Trying to buy", least)
 
-    # purchase one small barrel if i can afford it
+    # purchase medium barrels if i can afford it
     for barrel in wholesale_catalog:
         if gold >= barrel.price and len(plan) < 4 and ('MEDIUM' in barrel.sku):
             print("Successfully added to plan:", barrel.sku)
