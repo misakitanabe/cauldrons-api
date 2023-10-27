@@ -55,22 +55,21 @@ def search_orders(
     time is 5 total line items.
     """
 
-    limit = 5
-    # prev = '0'
-    if search_page != '':
+    next = ""
+    if search_page != '' and search_page != '0':
         offset = (int)(search_page)
-        next = (search_page)
+        prev = str((int)(search_page) - 5)
     else:
         offset = 0
-        next = ""
+        prev = ""
 
     # set order_by based on sort_col
     if sort_col is search_sort_options.customer_name:
-        order_by = db.carts.c.customer_name
+        order_by = db.carts.c.customer
     elif sort_col is search_sort_options.item_sku:
         order_by = db.potions.c.sku
     elif sort_col is search_sort_options.line_item_total:
-        order_by = db.cart_items.c.quantity
+        order_by = db.gold_ledger_entries.c.change
     elif sort_col is search_sort_options.timestamp:
         order_by = db.potion_ledger_entries.c.created_at
     else:
@@ -78,21 +77,16 @@ def search_orders(
 
     # set order_by based on sort_order
     if sort_order == search_sort_order.desc:
-        if sort_col is search_sort_options.line_item_total:
-            order_by = sqlalchemy.asc(order_by)
-        else:
-            order_by = sqlalchemy.desc(order_by)
+        order_by = sqlalchemy.desc(order_by)
     else:
-        if sort_col is search_sort_options.line_item_total:
-            order_by = sqlalchemy.desc(order_by)
-        else:
-            order_by = sqlalchemy.asc(order_by)
+        order_by = sqlalchemy.asc(order_by)
 
     # create query
     stmt = (
         sqlalchemy.select(
             db.cart_items.c.id,
             db.potions.c.sku,
+            db.gold_ledger_entries.c.change,
             db.carts.c.customer,
             db.cart_items.c.quantity,
             db.potion_ledger_entries.c.created_at
@@ -100,7 +94,8 @@ def search_orders(
         .join(db.potions, db.potions.c.id == db.cart_items.c.potions_id)
         .join(db.carts, db.carts.c.id == db.cart_items.c.cart_id)
         .join(db.potion_ledger_entries, db.potion_ledger_entries.c.cart_items_id == db.cart_items.c.id)
-        .limit(limit)
+        .join(db.gold_ledger_entries, db.gold_ledger_entries.c.cart_items_id == db.cart_items.c.id)
+        # .limit(limit)
         .offset(offset)
         .order_by(order_by) 
     )
@@ -123,19 +118,20 @@ def search_orders(
                 results.append(
                     {
                         "line_item_id": row.id,
-                        "item_sku": row.sku,
+                        "item_sku": str(row.quantity) + ' ' + row.sku,
                         "customer_name": row.customer,
-                        "line_item_total": row.quantity,
+                        "line_item_total": row.change,
                         "timestamp": row.created_at
                     }
                 )
             else:
-                if next == "":
-                    next = '0'
-                next = (int)(next) + 5
+                if search_page == '':
+                    next = "5"
+                else:
+                    next = str((int)(search_page) + 5) 
 
         return {
-            "previous": "",
+            "previous": prev,
             "next": next,
             "results": results
         }
