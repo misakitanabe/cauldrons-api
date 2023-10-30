@@ -117,26 +117,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     
     with db.engine.begin() as connection:
         gold = connection.execute(sqlalchemy.text("SELECT SUM(change) FROM gold_ledger_entries")).scalar_one()
-        # potion_row = connection.execute(sqlalchemy.text("""
-        #                                                 SELECT potion_type 
-        #                                                 FROM potions AS p 
-        #                                                 LEFT JOIN potion_ledger_entries AS entries ON p.id = entries.potion_id
-        #                                                 GROUP BY p.id
-        #                                                 ORDER BY SUM(entries.change) ASC
-        #                                                 """)).fetchone()
-
-        # if potion_row is not None:
-        #     least_type = potion_row[0]
-        #     least_index = least_type.index(max(least_type))
-        #     if least_index == 0:
-        #         least = "RED_BARREL"
-        #     elif least_index == 1:
-        #         least = "GREEN_BARREL"
-        #     elif least_index == 2:
-        #         least = "BLUE_BARREL"
-        #     else:
-        #         least = "GREEN_BARREL"
-
+    
         num_potions = connection.execute(sqlalchemy.text("""
                                                 SELECT SUM(change) 
                                                 FROM potion_ledger_entries

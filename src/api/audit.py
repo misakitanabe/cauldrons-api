@@ -24,6 +24,8 @@ def get_inventory():
                                                 SELECT SUM(change) 
                                                 FROM potion_ledger_entries
                                                 """)).scalar_one()
+        if potions is None:
+            potions = 0
 
     print("AUDIT: number_of_potions", potions, "ml_in_barrels", mls, "gold", gold)
     

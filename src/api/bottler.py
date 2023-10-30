@@ -115,6 +115,15 @@ def get_bottle_plan():
     plan = []
 
     with db.engine.begin() as connection:
+        num_potions = connection.execute(
+            sqlalchemy.text("""
+                            SELECT SUM(change) 
+                            FROM potion_ledger_entries
+                            """)).scalar_one()
+        
+        if num_potions and num_potions > 290:
+            return []
+
         # gets number of mls
         mls = connection.execute(
             sqlalchemy.text("""
@@ -160,6 +169,8 @@ def get_bottle_plan():
             num_green_ml -= needed_green
             num_blue_ml -= needed_blue
             num_dark_ml -= needed_dark
+            if num_potions + quantity > 295:
+                break
         
         if quantity > 0:
             plan.append (
@@ -168,7 +179,7 @@ def get_bottle_plan():
                     "quantity": quantity
                 }
             )
-    
+
     print("Bottlers Plan:", plan)
 
     return plan
