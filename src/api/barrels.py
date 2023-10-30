@@ -141,46 +141,25 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
             gold = 0
             
 
-        # print("Barrels Plan: Trying to buy", least)
-
     # purchase medium barrels if i can afford it
+    size = 'MEDIUM'
     for barrel in wholesale_catalog:
-        if gold >= barrel.price and len(plan) < 4 and ('MEDIUM' in barrel.sku):
-            print("Successfully added to plan:", barrel.sku)
-            plan.append(
-                {
-                    "sku": barrel.sku,
-                    "quantity": 1,
-                }
-            )
-            gold -= barrel.price
-        # else:
-        #     print("Not enough gold:", gold)
+        if len(plan) <= 3 and (size in barrel.sku):
+            if gold >= barrel.price:
+                print("Successfully added to plan:", barrel.sku)
+                plan.append(
+                    {
+                        "sku": barrel.sku,
+                        "quantity": 1,
+                    }
+                )
+                gold -= barrel.price
+            else:
+                if size == 'MEDIUM':
+                    size = 'SMALL'
+                elif size == 'SMALL':
+                    size = 'MINI'
 
-    # for barrel in wholesale_catalog:
-    #     if least in barrel.sku:
-    #         if barrel.price <= gold:
-    #             print("Successfully added to plan:", barrel.sku)
-    #             plan.append(
-    #                 {
-    #                     "sku": barrel.sku,
-    #                     "quantity": 1,
-    #                 }
-    #             )
-    #             if least == "RED_BARREL":
-    #                 least = "BLUE_BARREL"
-
-    #             if least == "BLUE_BARREL":
-    #                 least = "GREEN_BARREL"
-
-    #             if least == "GREEN_BARREL":
-    #                 least = "RED_BARREL"
-
-    #         else:
-    #             print("Not enough gold:", gold)
-    #             least = "MEDIUM_RED_BARREL"
-    
     print("Barrels plan:", plan, "gold:", gold)
     return plan
-
 
