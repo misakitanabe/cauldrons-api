@@ -121,7 +121,10 @@ def get_bottle_plan():
                             FROM potion_ledger_entries
                             """)).scalar_one()
         
-        if num_potions and num_potions > 290:
+        if not num_potions:
+            num_potions = 0
+        
+        if num_potions > 290:
             return []
 
         # gets number of mls
