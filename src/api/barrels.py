@@ -144,11 +144,11 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                     }
                 )
                 gold -= barrel.price
-            else:
-                if size == 'MEDIUM':
-                    size = 'SMALL'
-                elif size == 'SMALL':
-                    size = 'MINI'
+            # else:
+            #     if size == 'MEDIUM':
+            #         size = 'SMALL'
+            #     elif size == 'SMALL':
+            #         size = 'MINI'
 
     print("Barrels plan:", plan, "gold:", gold)
     return plan
