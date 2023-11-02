@@ -123,9 +123,9 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                                                 FROM potion_ledger_entries
                                                 """)).scalar_one()
         
-        # don't buy any more barrels if shop has more than 290 potions
-        if num_potions and num_potions > 275:
-            return []
+        # don't buy any more barrels if shop has more than 275 potions
+        # if num_potions and num_potions > 275:
+        #     return []
 
         if gold is None:
             gold = 0
