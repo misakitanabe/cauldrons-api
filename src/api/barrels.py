@@ -124,7 +124,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                                                 """)).scalar_one()
         
         # don't buy any more barrels if shop has more than 290 potions
-        if num_potions and num_potions > 290:
+        if num_potions and num_potions > 275:
             return []
 
         if gold is None:
@@ -132,9 +132,11 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
             
 
     # purchase medium barrels if i can afford it
-    size = 'MEDIUM'
+    size1 = 'MEDIUM'
+    size2 = 'LARGE'
+    color = 'DARK'
     for barrel in wholesale_catalog:
-        if len(plan) <= 3 and (size in barrel.sku):
+        if len(plan) <= 3 and (size1 in barrel.sku or size2 in barrel.sku or color in barrel.sku):
             if gold >= barrel.price:
                 print("Successfully added to plan:", barrel.sku)
                 plan.append(
@@ -144,11 +146,6 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                     }
                 )
                 gold -= barrel.price
-            # else:
-            #     if size == 'MEDIUM':
-            #         size = 'SMALL'
-            #     elif size == 'SMALL':
-            #         size = 'MINI'
 
     print("Barrels plan:", plan, "gold:", gold)
     return plan
