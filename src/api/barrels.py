@@ -137,15 +137,15 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     color = 'DARK'
     for barrel in wholesale_catalog:
         if len(plan) <= 3 and (size1 in barrel.sku or size2 in barrel.sku or color in barrel.sku):
-            if gold >= barrel.price:
+            if gold >= 3*barrel.price and barrel.quantity > 2:
                 print("Successfully added to plan:", barrel.sku)
                 plan.append(
                     {
                         "sku": barrel.sku,
-                        "quantity": 1,
+                        "quantity": 3,
                     }
                 )
-                gold -= barrel.price
+                gold -= barrel.price * 3
 
     print("Barrels plan:", plan, "gold:", gold)
     return plan
