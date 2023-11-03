@@ -118,10 +118,10 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     with db.engine.begin() as connection:
         gold = connection.execute(sqlalchemy.text("SELECT SUM(change) FROM gold_ledger_entries")).scalar_one()
     
-        num_potions = connection.execute(sqlalchemy.text("""
-                                                SELECT SUM(change) 
-                                                FROM potion_ledger_entries
-                                                """)).scalar_one()
+        # num_potions = connection.execute(sqlalchemy.text("""
+        #                                         SELECT SUM(change) 
+        #                                         FROM potion_ledger_entries
+        #                                         """)).scalar_one()
         
         # don't buy any more barrels if shop has more than 275 potions
         # if num_potions and num_potions > 275:
