@@ -58,7 +58,7 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
                 blue_diff += barrel.ml_per_barrel * barrel.quantity
             else:
                 dark_diff += barrel.ml_per_barrel * barrel.quantity
-            gold_diff -= barrel.price 
+            gold_diff -= barrel.price * barrel.quantity
 
         print("Barrels delivered AFTER: red ml:", num_red_ml + red_diff, "green:", num_green_ml + green_diff, "blue:", num_blue_ml + blue_diff, "gold:", gold + gold_diff)
        
