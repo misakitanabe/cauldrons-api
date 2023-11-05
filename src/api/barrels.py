@@ -117,15 +117,6 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     
     with db.engine.begin() as connection:
         gold = connection.execute(sqlalchemy.text("SELECT SUM(change) FROM gold_ledger_entries")).scalar_one()
-    
-        # num_potions = connection.execute(sqlalchemy.text("""
-        #                                         SELECT SUM(change) 
-        #                                         FROM potion_ledger_entries
-        #                                         """)).scalar_one()
-        
-        # don't buy any more barrels if shop has more than 275 potions
-        # if num_potions and num_potions > 275:
-        #     return []
 
         if gold is None:
             gold = 0
@@ -137,15 +128,15 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     color = 'DARK'
     for barrel in wholesale_catalog:
         if len(plan) <= 3 and (size1 in barrel.sku or size2 in barrel.sku or color in barrel.sku):
-            if gold >= 3*barrel.price and barrel.quantity > 2:
+            if gold >= 5*barrel.price and barrel.quantity > 4:
                 print("Successfully added to plan:", barrel.sku)
                 plan.append(
                     {
                         "sku": barrel.sku,
-                        "quantity": 3,
+                        "quantity": 5,
                     }
                 )
-                gold -= barrel.price * 3
+                gold -= barrel.price * 5
 
     size1 = 'SMALL'
     if plan == []:
