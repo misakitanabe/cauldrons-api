@@ -161,7 +161,7 @@ def get_bottle_plan():
         quantity = 0
         potion_type = potion[1]
         # DON'T MAKE TEAL OR PURPLE
-        if potion_type != [0,50,50,0] and potion_type != [50,0,50,0]:
+        if potion_type != [0,50,50,0] and potion_type != [50,0,50,0] and num_potions < 295:
             # gets the recipe of each potion, and ml needed of each type for that potion
             needed_red = potion_type[0]
             needed_green = potion_type[1]
@@ -174,7 +174,8 @@ def get_bottle_plan():
                 num_green_ml -= needed_green
                 num_blue_ml -= needed_blue
                 num_dark_ml -= needed_dark
-                if num_potions + quantity > 295:
+                num_potions += quantity
+                if num_potions > 295:
                     break
             
             if quantity > 0:
