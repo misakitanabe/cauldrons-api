@@ -174,7 +174,7 @@ def get_bottle_plan():
                 num_green_ml -= needed_green
                 num_blue_ml -= needed_blue
                 num_dark_ml -= needed_dark
-                num_potions += quantity
+                num_potions += 1
                 if num_potions > 295:
                     break
             
