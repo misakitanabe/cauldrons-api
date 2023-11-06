@@ -168,7 +168,7 @@ def get_bottle_plan():
             needed_blue = potion_type[2]
             needed_dark = potion_type[3]
 
-            while num_red_ml >= needed_red and num_green_ml >= needed_green and num_blue_ml >= needed_blue and num_dark_ml >= needed_dark:
+            while quantity < 100 and num_red_ml >= needed_red and num_green_ml >= needed_green and num_blue_ml >= needed_blue and num_dark_ml >= needed_dark:
                 quantity += 1
                 num_red_ml -= needed_red
                 num_green_ml -= needed_green
