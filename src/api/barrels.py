@@ -114,6 +114,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     print(wholesale_catalog)
 
     plan = []
+    return plan
     
     with db.engine.begin() as connection:
         gold = connection.execute(sqlalchemy.text("SELECT SUM(change) FROM gold_ledger_entries")).scalar_one()
